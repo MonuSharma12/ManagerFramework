@@ -93,8 +93,120 @@ public class StepDef extends BaseClass
 	}
 	
 	
+	@When("User enters Email as {string}")
+	public void user_enters_email_as(String emailadd) {
+		//move on login Window
+		String origionalWindow=driver.getWindowHandle();
+		Set<String> allPages=driver.getWindowHandles();
+		for(String page:allPages)
+		{
+			driver.switchTo().window(page);
+		}
+		System.out.println("move to login window");
+		
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    loginPg.enterEmail(emailadd);
+		log.info("Entered Email Id...");
+	}
 	
+	@When("Click on Next")
+	public void click_on_next() {
+	    loginPg.clickOnFirstNextButton();
+	    log.info("Clicked on First next Button...");
+	}
+	
+	@When("User enters Password as {string}")
+	public void user_enters_password_as(String passwordadd) {
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    loginPg.enterPassword(passwordadd);
+	    log.info("Entered Password...");
+	}
+	
+	@When("Click on Next2")
+	public void click_on_next2() {
+		loginPg.clickOnSecondNextButton();
+		log.info("Clicked on Second next Button...");
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("Login success");
+	    
+		}
+	
+	@Then("Page Title should be {string}")
+	public void page_title_should_be(String expectedTitle) {
+		//move on Dash Board
+		Set<String> allWindowHandles = driver.getWindowHandles();
+
+		// Iterate through the handles and switch to the last one
+		for (String windowHandle : allWindowHandles) {
+		    driver.switchTo().window(windowHandle);
+		}
+		
+		//page title verify
+		String actualTitle=driver.getTitle();
+
+		if(actualTitle.equals(expectedTitle))
+		{
+			log.warn("Test passed: Login feature :Page title matched.");
+
+			Assert.assertTrue(true);//pass
+		}
+		else
+		{
+			Assert.assertTrue(false);//fail
+			log.warn("Test Failed: Login feature- page title not matched.");
+
+
+		}
+	}
+	
+	@After
+	public void teardown(Scenario sc)
+	{
+		System.out.println("Tear Down method executed..");
+		if(sc.isFailed()==true)
+		{
+			//Convert web driver object to TakeScreenshot
+
+			String fileWithPath = "D:\\Shivam Download\\Eclipse Workspace\\CucumberFramework\\Screenshot\\failedScreenshot.png";
+			TakesScreenshot scrShot =((TakesScreenshot)driver);
+
+			//Call getScreenshotAs method to create image file
+			File SrcFile=scrShot.getScreenshotAs(OutputType.FILE);
+
+			//Move image file to new destination
+			File DestFile=new File(fileWithPath);
+
+			//Copy file at destination
+
+			try {
+				FileUtils.copyFile(SrcFile, DestFile);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		driver.quit();
+	}
+	
+
+	}
 	
 	
 
-}
